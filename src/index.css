@@ -1,0 +1,92 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  height: 100dvh;
+  overflow: hidden;
+  background-color: #080312;
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  overscroll-behavior: none;
+}
+
+#root {
+  width: 100%;
+  height: 100%;
+  height: 100dvh;
+  position: relative;
+  overflow: hidden;
+}
+
+.pt-safe {
+  padding-top: max(0.75rem, env(safe-area-inset-top, 0.75rem));
+}
+.pb-safe {
+  padding-bottom: max(1rem, env(safe-area-inset-bottom, 1rem));
+}
+.pl-safe {
+  padding-left: max(0.75rem, env(safe-area-inset-left, 0.75rem));
+}
+.pr-safe {
+  padding-right: max(0.75rem, env(safe-area-inset-right, 0.75rem));
+}
+
+.bg-romantic-gradient {
+  background: radial-gradient(
+    circle at 50% 40%,
+    rgba(65, 18, 75, 0.42) 0%,
+    rgba(30, 9, 45, 0.72) 45%,
+    rgba(12, 4, 20, 0.95) 75%,
+    #07020e 100%
+  );
+}
+
+.text-glow {
+  text-shadow: 0 0 20px rgba(255, 140, 180, 0.5), 0 0 40px rgba(230, 80, 140, 0.28);
+}
+
+.button-glow-pink {
+  box-shadow: 0 4px 22px rgba(244, 63, 94, 0.45), 0 0 35px rgba(251, 113, 133, 0.25);
+}
+
+.button-glow-pink:active,
+.button-glow-pink:hover {
+  box-shadow: 0 6px 30px rgba(244, 63, 94, 0.6), 0 0 45px rgba(251, 113, 133, 0.35);
+}
+
+.glass-panel {
+  background: rgba(22, 9, 38, 0.6);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 180, 210, 0.15);
+  transform: translateZ(0);
+}
+
+.gpu-layer {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
