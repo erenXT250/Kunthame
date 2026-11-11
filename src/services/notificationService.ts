@@ -1,7 +1,7 @@
 // Notification Service for Kunthame Marriage Proposal (Discord Webhook & ntfy App)
 
 const DISCORD_WEBHOOK_URL =
-  'https://discord.com/api/webhooks/1569952423848706098/UmITVG9pzpgngdf2J0-A9_y5rvSySe2Z_3iqZoPcnFDVj6pTYkGFxWhvCfW1Kol9R8Gi';
+  'https://discord.com/api/webhooks/1569965980040298578/sPqCi4Be6yd6AbO121a3QYo2MTxL1X9dhtAn2MHMQ-yPR06o2KPAz7maOWNQEAJBXXUo';
 
 export const NTFY_TOPIC = 'kunthame-proposal-eren';
 
