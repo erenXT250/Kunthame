@@ -13,6 +13,7 @@ declare global {
 }
 
 const YOUTUBE_VIDEO_ID = '_MYpI4ZQooE'; // "Karthaave Nee" from Christian Brothers
+const START_SECONDS = 34; // Start from 0:34
 
 export const AudioController: React.FC<AudioControllerProps> = ({ hasUserInteracted }) => {
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
@@ -20,6 +21,7 @@ export const AudioController: React.FC<AudioControllerProps> = ({ hasUserInterac
   const [ytReady, setYtReady] = useState<boolean>(false);
 
   const playerRef = useRef<any>(null);
+  const hasSeekedInitialRef = useRef<boolean>(false);
   const audioCtxRef = useRef<AudioContext | null>(null);
   const masterGainRef = useRef<GainNode | null>(null);
   const synthIntervalRef = useRef<number | null>(null);
@@ -50,29 +52,33 @@ export const AudioController: React.FC<AudioControllerProps> = ({ hasUserInterac
               playlist: YOUTUBE_VIDEO_ID,
               modestbranding: 1,
               playsinline: 1,
+              start: START_SECONDS,
               origin: window.location.origin,
             },
             events: {
               onReady: (event: any) => {
                 setYtReady(true);
                 event.target.setVolume(85);
+                event.target.seekTo(START_SECONDS, true);
               },
               onStateChange: (event: any) => {
                 if (window.YT) {
                   if (event.data === window.YT.PlayerState.PLAYING) {
                     setIsPlaying(true);
-                  } else if (
-                    event.data === window.YT.PlayerState.PAUSED ||
-                    event.data === window.YT.PlayerState.ENDED
-                  ) {
+                  } else if (event.data === window.YT.PlayerState.PAUSED) {
                     setIsPlaying(false);
+                  } else if (event.data === window.YT.PlayerState.ENDED) {
+                    try {
+                      event.target.seekTo(START_SECONDS, true);
+                      event.target.playVideo();
+                    } catch {}
                   }
                 }
               },
             },
           });
         } catch {
-          // If YouTube embed fails, fallback to Web Audio
+          // Fallback to Web Audio if blocked
         }
       }
     };
@@ -185,10 +191,13 @@ export const AudioController: React.FC<AudioControllerProps> = ({ hasUserInterac
     }
   };
 
-  // Play music (prioritizing YouTube track, falling back to Web Audio synth)
   const playTrack = () => {
     if (playerRef.current && typeof playerRef.current.playVideo === 'function') {
       try {
+        if (!hasSeekedInitialRef.current) {
+          playerRef.current.seekTo(START_SECONDS, true);
+          hasSeekedInitialRef.current = true;
+        }
         playerRef.current.playVideo();
         setIsPlaying(true);
         return;
@@ -234,7 +243,6 @@ export const AudioController: React.FC<AudioControllerProps> = ({ hasUserInterac
 
   return (
     <>
-      {/* Hidden YouTube IFrame Player */}
       <div
         className="fixed -top-96 -left-96 w-1 h-1 opacity-0 pointer-events-none overflow-hidden"
         aria-hidden="true"
@@ -242,14 +250,13 @@ export const AudioController: React.FC<AudioControllerProps> = ({ hasUserInterac
         <div id="kunthame-yt-audio-player" />
       </div>
 
-      {/* Floating Music Toggle Button */}
       <div className="fixed top-3 right-3 z-50 pt-safe pr-safe pointer-events-auto">
         <button
           onClick={handleToggle}
           type="button"
           className="group relative flex items-center gap-2 px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-full glass-panel border border-pink-400/25 text-pink-200/90 hover:text-pink-100 hover:border-pink-300/40 hover:bg-rose-950/40 active:scale-95 transition-all duration-300 shadow-lg shadow-black/40"
           aria-label={isPlaying ? 'Mute song' : 'Play song: Karthaave Nee'}
-          title="Karthaave Nee (Christian Brothers)"
+          title="Karthaave Nee (Christian Brothers) — starts at 0:34"
         >
           <span className="relative flex h-2 w-2">
             {isPlaying && (
