@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import confetti from 'canvas-confetti';
 import { PetalCanvas } from './components/PetalCanvas';
@@ -6,10 +6,15 @@ import { AmbientStarfield } from './components/AmbientStarfield';
 import { ProposalCard } from './components/ProposalCard';
 import { ResultScreen } from './components/ResultScreen';
 import { AudioController } from './components/AudioController';
+import { notifySiteVisit, notifyYesCelebration } from './services/notificationService';
 
 export const App: React.FC = () => {
   const [outcome, setOutcome] = useState<'idle' | 'accepted' | 'declined'>('idle');
   const [hasUserInteracted, setHasUserInteracted] = useState<boolean>(false);
+
+  useEffect(() => {
+    notifySiteVisit();
+  }, []);
 
   const handleInteraction = useCallback(() => {
     if (!hasUserInteracted) {
@@ -19,6 +24,7 @@ export const App: React.FC = () => {
 
   const handleSelectYes = useCallback(() => {
     setOutcome('accepted');
+    notifyYesCelebration();
 
     try {
       const count = 150;
@@ -36,7 +42,6 @@ export const App: React.FC = () => {
         });
       };
 
-      // Multi-stage golden-rose wedding confetti
       fire(0.25, {
         spread: 45,
         startVelocity: 50,
@@ -68,9 +73,7 @@ export const App: React.FC = () => {
         startVelocity: 50,
         colors: ['#ffb6c1', '#f59e0b', '#ffffff'],
       });
-    } catch {
-      // Confetti fallback
-    }
+    } catch {}
   }, []);
 
   const handleSelectNo = useCallback(() => {

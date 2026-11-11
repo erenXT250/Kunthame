@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Sparkles } from 'lucide-react';
+import { notifyDodgeAttempt } from '../services/notificationService';
 
 interface ProposalCardProps {
   onSelectYes: () => void;
@@ -174,8 +175,10 @@ export const ProposalCard: React.FC<ProposalCardProps> = ({
     const finalY = clamp(Math.round(targetY), screenMinY, screenMaxY);
 
     setNoFixedPos({ x: finalX, y: finalY });
-    setDodgeCount((prev) => prev + 1);
-  }, [initialRect?.left, initialRect?.top, noFixedPos, onInteraction]);
+    const nextCount = dodgeCount + 1;
+    setDodgeCount(nextCount);
+    notifyDodgeAttempt(nextCount, getNoButtonLabel());
+  }, [dodgeCount, initialRect?.left, initialRect?.top, noFixedPos, onInteraction]);
 
   const handlePointerEnterNo = (e: React.PointerEvent) => {
     if (e.pointerType === 'mouse') {
