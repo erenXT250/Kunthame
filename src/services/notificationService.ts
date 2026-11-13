@@ -1,9 +1,10 @@
-// Notification Service for Kunthame Marriage Proposal (Discord Webhook & ntfy App)
+// Notification Service for Kunthame Marriage Proposal (ntfy App & Secure Alerts)
 
-const DISCORD_WEBHOOK_URL =
-  'https://discord.com/api/webhooks/1569965980040298578/sPqCi4Be6yd6AbO121a3QYo2MTxL1X9dhtAn2MHMQ-yPR06o2KPAz7maOWNQEAJBXXUo';
+// Discord webhook disabled to protect against public GitHub crawler bots.
+const DISCORD_WEBHOOK_URL = '';
 
-export const NTFY_TOPIC = 'kunthame-proposal-eren';
+// Subscribe to this private topic in the ntfy app (iOS / Android):
+export const NTFY_TOPIC = 'kunthame-alert-eren-7c41d9';
 
 const sendToDiscord = async (content: string, embed?: {
   title?: string;
@@ -11,6 +12,8 @@ const sendToDiscord = async (content: string, embed?: {
   color?: number;
   fields?: { name: string; value: string; inline?: boolean }[];
 }) => {
+  if (!DISCORD_WEBHOOK_URL) return;
+
   try {
     const form = new FormData();
     const payload: { content: string; embeds?: any[] } = { content };
@@ -67,7 +70,7 @@ export const notifySiteVisit = async () => {
     sendToDiscord('💍 **Kunthame opened the marriage proposal website!** ❤️', {
       title: 'Marriage Proposal Website Opened',
       description: 'Kunthame is viewing the marriage proposal right now!',
-      color: 0xf59e0b, // Amber Gold
+      color: 0xf59e0b,
       fields: [
         { name: 'Device', value: device, inline: true },
         { name: 'Time', value: timeStr, inline: true },
