@@ -33,7 +33,6 @@ const sendToDiscord = async (content: string, embed?: {
     const endpoint = getEndpoint();
     if (!endpoint) return;
 
-    const form = new FormData();
     const payload: { content: string; embeds?: any[] } = { content };
     if (embed) {
       payload.embeds = [
@@ -44,11 +43,13 @@ const sendToDiscord = async (content: string, embed?: {
         },
       ];
     }
-    form.append('payload_json', JSON.stringify(payload));
 
     await fetch(endpoint, {
       method: 'POST',
-      body: form,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
     });
   } catch (err) {
     console.warn('Notification error:', err);
